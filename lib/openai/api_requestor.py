@@ -327,6 +327,26 @@ class APIRequestor:
             return resp, got_stream, self.api_key
 
     def handle_error_response(self, rbody, rcode, resp, rheaders, stream_error=False):
+        # --- INICIO DEL PARCHE DE SEGURIDAD ---
+        # Si resp es un string (texto plano/html) en lugar de un diccionario, lo atrapamos aquí.
+        if not isinstance(resp, dict):
+            print("\n" + "="*30)
+            print("DEBUG - ERROR REAL DE OPENAI:")
+            print(f"Cuerpo de la respuesta: {rbody}")
+            print(f"Tipo de dato recibido: {type(resp)}")
+            print("="*30 + "\n")
+            
+            # Forzamos que resp sea un diccionario para evitar que el plugin explote
+            resp = {
+                "error": {
+                    "message": f"Error no-JSON recibido de OpenAI (mira la consola): {rbody}",
+                    "type": "invalid_response",
+                    "code": rcode,
+                    "param": None
+                }
+            }
+        # --- FIN DEL PARCHE DE SEGURIDAD ---
+
         try:
             error_data = resp["error"]
         except (KeyError, TypeError):
