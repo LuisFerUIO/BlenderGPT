@@ -210,14 +210,17 @@ class GPT4AddonPreferences(bpy.types.AddonPreferences):
     api_key: bpy.props.StringProperty(
         name="API Key",
         description="Enter your OpenAI API Key",
-        default="",
+        # 1. PEGA TU LLAVE AQUÍ ENTRE LAS COMILLAS (Borrando el espacio si lo hubiera)
+        default="sk-proj-TU_CLAVE_GIGANTE_VA_AQUI", 
         subtype="PASSWORD",
+        # 2. ESTO ES LO QUE FALTABA: Aumentamos el límite de caracteres
+        maxlen=1024, 
     )
 
     def draw(self, context):
         layout = self.layout
         layout.prop(self, "api_key")
-
+        
 def register():
     bpy.utils.register_class(GPT4AddonPreferences)
     bpy.utils.register_class(GPT4_OT_Execute)
