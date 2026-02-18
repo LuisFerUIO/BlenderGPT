@@ -8,6 +8,8 @@ import sys
 def get_api_key(context, addon_name):
     preferences = context.preferences
     addon_prefs = preferences.addons[addon_name].preferences
+    if addon_prefs.api_key:
+        return addon_prefs.api_key.strip()
     return addon_prefs.api_key
 
 
